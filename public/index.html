@@ -1,0 +1,54 @@
+<!DOCTYPE html>
+<html>
+  <head>
+    <title>Super Secret Chat</title>
+    <link href='http://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
+    <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
+    <link rel="stylesheet" href="css/jquery.mCustomScrollbar.css">
+    <link rel="stylesheet" href="css/buttons.css">
+    <link rel="stylesheet" href="css/styles.css">
+  </head>
+  <body>
+    <div id="header">
+        <h1>25.13.12.125:3000</h1>
+        <h3><span id="users"></span> Users Connected</h3>
+    </div>
+    <div id="messageblock">
+        <ul id="messages"></ul>
+    </div>
+    <div id="send">
+        <form action="">
+          <input id="m" autocomplete="off" /><button class="button button-rounded button-flat-primary">Send</button>
+        </form>
+    </div>
+    <script src="/socket.io/socket.io.js"></script>
+    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
+    <script src="js/buttons.js"></script>
+    <script>
+    	var socket = io();
+    	$('form').submit(function(){
+    		socket.emit('chat message', $('#m').val());
+    		$('#m').val('');
+    		return false;
+    	});
+        io.on('connection', function(socket){
+            $('#messages').append($('<li>').text("A user has connected"));
+        }
+    	socket.on('chat message', function(msg){
+    		$('#messages').append($('<li>').text(msg));
+            $("#messageblock").scrollTop($("#messages").position.top+$("#messages").height());
+    	})
+    </script>
+    <script>
+        (function($){
+            $(window).load(function(){
+               $("#messageblock").mCustomScrollbar({
+                    axis:"y",
+                    theme:"dark"
+                });
+            });
+        })(jQuery);
+    </script>
+  </body>
+</html>
