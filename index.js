@@ -19,9 +19,9 @@ app.get('/', function(req, res){
 io.on('connection', function(socket){
 	console.log('a user connected');
 	data = storage.getItem('data');
-	data.users += 1;
+	data.totalUsers += 1;
 	storage.setItem('data', data);
-	socket.emit('con', data.users);
+	socket.emit('con', data.totalUsers);
 	socket.emit('chat message', "A user connected.");
 	socket.on('disconnect',function(){
 		data.users -= 1;
