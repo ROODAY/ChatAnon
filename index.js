@@ -7,15 +7,13 @@ var data = {
 	users: {}, //two dimensional array, first is id, second is color
 	totalUsers: 0
 }
+var oldMessages;
 
 Colors = {};
 Colors.names = {
-    aqua: "#00ffff",
     azure: "#f0ffff",
-    beige: "#f5f5dc",
     blue: "#0000ff",
     brown: "#a52a2a",
-    cyan: "#00ffff",
     darkblue: "#00008b",
     darkcyan: "#008b8b",
     darkgrey: "#a9a9a9",
@@ -32,14 +30,11 @@ Colors.names = {
     gold: "#ffd700",
     green: "#008000",
     indigo: "#4b0082",
-    khaki: "#f0e68c",
-    lime: "#00ff00",
     magenta: "#ff00ff",
     maroon: "#800000",
     navy: "#000080",
     olive: "#808000",
     orange: "#ffa500",
-    pink: "#ffc0cb",
     purple: "#800080",
     violet: "#800080",
     red: "#ff0000"

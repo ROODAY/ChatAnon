@@ -57,5 +57,12 @@
             });
         })(jQuery);
     </script>
+    <script>
+        $(function() {
+          var divtoscroll = $('#messageblock');
+          var height = divtoscroll[0].scrollHeight;
+          divtoscroll.scrollTop(height);
+        });
+    </script>
   </body>
 </html>
