@@ -29,7 +29,6 @@
     	var socket = io();
         var localID = 0;
         var data = {};
-        //id caught here
         socket.on('localID', function(id) {
             localID = id;
         });
@@ -40,11 +39,12 @@
     	$('form').submit(function(){
     		socket.emit('chat message', $('#m').val(), localID);
     		$('#m').val('');
+            $("#messageblock").mCustomScrollbar("scrollTo","bottom");
     		return false;
     	});
     	socket.on('chat message', function(msg, id){
     		$('#messages').append($('<li style="color:' + data.users[id] + ';">').text(msg));
-            $("#messageblock").scrollTop($("#messages").position.top+$("#messages").height());
+            $("#messageblock").mCustomScrollbar("scrollTo","bottom");
     	});
     </script>
     <script>
@@ -52,17 +52,15 @@
             $(window).load(function(){
                $("#messageblock").mCustomScrollbar({
                     axis:"y",
-                    theme:"dark"
+                    theme:"dark",
+                    callbacks:{
+                        whileScrolling:function(){ 
+                            console.log(this.mcs.topPct);
+                        }
+                    },
                 });
             });
         })(jQuery);
-    </script>
-    <script>
-        $(function() {
-          var divtoscroll = $('#messageblock');
-          var height = divtoscroll[0].scrollHeight;
-          divtoscroll.scrollTop(height);
-        });
     </script>
   </body>
 </html>
