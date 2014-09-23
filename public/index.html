@@ -32,7 +32,9 @@
         var localscroll = 100;
         function checkScroll(scroll) {
             if (scroll >= 80) {
-                $("#messageblock").mCustomScrollbar("scrollTo","bottom");
+                $("#messageblock").mCustomScrollbar("scrollTo","bottom", {
+                    scrollInertia:1
+                });
             }
         }
         socket.on('localID', function(id) {
@@ -49,8 +51,10 @@
     		return false;
     	});
     	socket.on('chat message', function(msg, id){
-    		$('#messages').append($('<li style="color:' + data.users[id] + ';">').text(msg));
-            checkScroll(localscroll);
+            if (msg != "") {
+                $('#messages').append($('<li style="color:' + data.users[id] + ';">').text(msg));
+                checkScroll(localscroll);
+            }
     	});
 
         (function($){
