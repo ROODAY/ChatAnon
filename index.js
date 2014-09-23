@@ -9,18 +9,7 @@ var data = {
 }
 
 var randomColor = new function(){
-	function rgb(string){
-		return string.match(/\w\w/g).map(function(b){return parseInt(b, 16)})
-	}
-	var rbg1 = rgb("#333333");
-	var rgb2 = rgb("#CCCCCC");
-	var rgb3 = [];
-	for(var i=0; i<3; i++){
-		rgb3 = rgb1[i]+Math.random()*(rgb2[i]-rgb1[i])|0;
-	}
-	var newColor = '#' + rgb3
-		.map(function(n){return n.toString(16)})
-		.map(function(s){return "00".slice(s.length)+s}).join('');
+	var newColor = '#'+Math.floor((Math.random()*3355443) + 13421772).toString(16);
 	return newColor;
 };
 
@@ -36,7 +25,7 @@ io.on('connection', function(socket){
 	console.log('a user connected');
 	data = storage.getItem('data');
 	data.totalUsers += 1;
-	data.users[socket.id] = randomColor();
+	data.users[socket.id] = '#'+Math.floor((Math.random()*3355443) + 13421772).toString(16);
 	storage.setItem('data', data);
 	socket.emit('con', data.totalUsers);
 	socket.emit('senddata', data);
