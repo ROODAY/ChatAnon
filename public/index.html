@@ -29,6 +29,14 @@
     	var socket = io();
         var localID = 0;
         var data = {};
+        //id caught here
+        socket.on('localID', function(id) {
+            localID = id;
+        });
+        socket.on('senddata', function(arg){
+            data = arg;
+            $('#users').html(arg.totalUsers);
+        });
     	$('form').submit(function(){
     		socket.emit('chat message', $('#m').val(), localID);
     		$('#m').val('');
@@ -36,19 +44,8 @@
     	});
     	socket.on('chat message', function(msg, id){
     		$('#messages').append($('<li style="color:' + data.users[id] + ';">').text(msg));
-            console.log(data.users[id]);
             $("#messageblock").scrollTop($("#messages").position.top+$("#messages").height());
     	});
-        //id caught here
-        socket.on('localID', function(id) {
-            localID = id;
-        });
-        socket.on('con', function(num){
-            $('#users').html(num);
-        });
-        socket.on('senddata', function(arg){
-            data = arg;
-        });
     </script>
     <script>
         (function($){
