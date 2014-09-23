@@ -38,16 +38,18 @@ io.on('connection', function(socket){
 	data.totalUsers += 1;
 	storage.setItem('data', data);
 	socket.emit('con', data.totalUsers);
+	socket.emit('senddata', data);
+	//socket.emit('localID', id); id passed here
 	socket.emit('chat message', "A user connected.");
 	socket.on('disconnect',function(){
 		data.totalUsers -= 1;
 		storage.setItem('data', data);
-		socket.emit('con', data.users);
+		socket.emit('con', data.totalUsers);
 		console.log('a user disconnected');
 		socket.emit('chat message', "A user disconnected.");
 	});
-	socket.on('chat message', function(msg){
-		io.emit('chat message', msg);
+	socket.on('chat message', function(msg, id){
+		io.emit('chat message', msg, id);
 	});
 });
 

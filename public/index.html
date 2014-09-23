@@ -27,18 +27,27 @@
     <script src="js/buttons.js"></script>
     <script>
     	var socket = io();
+        var localID = 0;
+        var data = {};
     	$('form').submit(function(){
-    		socket.emit('chat message', $('#m').val());
+    		socket.emit('chat message', $('#m').val(), localID);
     		$('#m').val('');
     		return false;
     	});
-    	socket.on('chat message', function(msg){
-    		$('#messages').append($('<li>').text(msg));
+    	socket.on('chat message', function(msg, id){
+    		$('#messages').append($('<li style="color: data.users[id];">').text(msg));
             $("#messageblock").scrollTop($("#messages").position.top+$("#messages").height());
     	});
+        //id caught here
+        socket.on('localID', function(id) {
+            localID = id;
+        });
         socket.on('con', function(num){
             $('#users').html(num);
-        })
+        });
+        socket.on('senddata', function(arg){
+            data = arg;
+        });
     </script>
     <script>
         (function($){
