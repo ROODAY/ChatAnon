@@ -12,3 +12,4 @@ To do
 - [ ] Save last 50 messages, push new ones in and pop out old ones, so when someone joins there's something there
 - [ ] Fix the whole user's connected thing so it updates correctly
 - [ ] Sometimes colors don't work and need a refresh
+- [ ] Fix sizing issues on different browser sizes
