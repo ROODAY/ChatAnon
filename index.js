@@ -36,10 +36,11 @@ io.on('connection', function(socket){
 	console.log('a user connected');
 	data = storage.getItem('data');
 	data.totalUsers += 1;
+	data.users[socket.id] = randomColor();
 	storage.setItem('data', data);
 	socket.emit('con', data.totalUsers);
 	socket.emit('senddata', data);
-	//socket.emit('localID', id); id passed here
+	socket.emit('localID', socket.id);
 	socket.emit('chat message', "A user connected.");
 	socket.on('disconnect',function(){
 		data.totalUsers -= 1;
