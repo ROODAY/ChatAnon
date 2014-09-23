@@ -24,7 +24,7 @@ io.on('connection', function(socket){
 	socket.emit('con', data.totalUsers);
 	socket.emit('chat message', "A user connected.");
 	socket.on('disconnect',function(){
-		data.users -= 1;
+		data.totalUsers -= 1;
 		storage.setItem('data', data);
 		socket.emit('con', data.users);
 		console.log('a user disconnected');
