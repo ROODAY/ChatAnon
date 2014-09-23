@@ -4,9 +4,25 @@ var http = require('http').Server(app);
 var io = require("socket.io")(http);
 var storage = require('node-persist');
 var data = {
-	users: [], //two dimensional array, first is id, second is color
+	users: {}, //two dimensional array, first is id, second is color
 	totalUsers: 0
 }
+
+var randomColor = new function(){
+	function rgb(string){
+		return string.match(/\w\w/g).map(function(b){return parseInt(b, 16)})
+	}
+	var rbg1 = rgb("#333333");
+	var rgb2 = rgb("#CCCCCC");
+	var rgb3 = [];
+	for(var i=0; i<3; i++){
+		rgb3 = rgb1[i]+Math.random()*(rgb2[i]-rgb1[i])|0;
+	}
+	var newColor = '#' + rgb3
+		.map(function(n){return n.toString(16)})
+		.map(function(s){return "00".slice(s.length)+s}).join('');
+	return newColor;
+};
 
 storage.initSync();
 storage.setItem('data', data);
