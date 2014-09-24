@@ -55,6 +55,7 @@
         var blurred = false;
         var focused = true;
         var lastmsg = Date.now();
+        var nummessages = $("#messages").children().length;
         function checkScroll(scroll) {
             if (scroll >= 80) {
                 $("#messageblock").mCustomScrollbar("scrollTo","bottom", {
@@ -77,6 +78,9 @@
         socket.on('firstjoin', function(oldmessages) {
             for (var i = 0; i < oldmessages.length; i++) {
                 $('#messages').append($('<li style="color:' + oldmessages[i][1] + ';">').text(oldmessages[i][0]).linkify());
+                if (nummessages > 50) {
+                    $("#messages:first-child").remove();
+                }
             }
         });
         socket.on('ding', function(arg) {
@@ -110,6 +114,10 @@
     	socket.on('chat message', function(msg, id){
             if (msg != "") {
                 $('#messages').append($('<li style="color:' + data.users[id] + ';">').text(msg).linkify());
+                nummessages = $("#messages li").children().length;
+                if (nummessages > 50) {
+                    $("#messages:first-child").remove();
+                }
                 socket.emit('pushli', msg, localID);
                 checkScroll(localscroll);
             }

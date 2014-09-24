@@ -12,7 +12,6 @@ var roomList = [];
 
 Colors = {};
 Colors.names = {
-    azure: "#f0ffff",
     blue: "#0000ff",
     brown: "#a52a2a",
     darkblue: "#00008b",
@@ -63,7 +62,6 @@ io.on('connection', function(socket){
 	storage.setItem('data', data);
 
     socket.emit('localID', socket.id);
-    var sendstring = JSON.stringify(oldMessages);
     socket.emit('firstjoin', oldMessages);
     io.emit('ding', true);
 	io.emit('senddata', data);
