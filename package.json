@@ -1,6 +1,6 @@
 {
   "name": "secret-chatroom",
-  "version": "0.0.1",
+  "version": "0.8.0",
   "description": "For super secret things",
   "dependencies": {
     "express": "^4.9.4",
