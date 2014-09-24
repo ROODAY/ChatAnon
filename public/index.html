@@ -54,6 +54,7 @@
         var missed = 0;
         var blurred = false;
         var focused = true;
+        var lastmsg = Date.now();
         function checkScroll(scroll) {
             if (scroll >= 80) {
                 $("#messageblock").mCustomScrollbar("scrollTo","bottom", {
@@ -87,9 +88,15 @@
         });
     	$('form').submit(function(){
             if ($('#m').val().length <= 500) {
-        		socket.emit('chat message', $('#m').val(), localID);
-        		$('#m').val('');
-        		return false;
+                if (((Date.now() - lastmsg) / 1000) > 1.5) {
+            		socket.emit('chat message', $('#m').val(), localID);
+            		$('#m').val('');
+                    lastmsg = Date.now();
+            		return false;
+                } else {
+                    alert("Please wait 1.5 seconds between messages!");
+                    return false;  
+                }
             } else {
                 alert( $("#m").val().length + " is too many characters! It has to be under 500!")
                 return false;
