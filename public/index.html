@@ -63,6 +63,9 @@
                 missed += 1;
             }
             if (blurred) {
+                if (missed > 0) {
+                    document.title = "(" + missed + ") New Messages";
+                }
                 var ding = new Audio("newmessage.wav");
                 ding.play();
             }
