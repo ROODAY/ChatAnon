@@ -30,7 +30,7 @@
   </head>
   <body>
     <div id="header">
-        <h1>25.13.12.125:3000</h1>
+        <h1>Super Secret Chat</h1>
         <h3><span id="users"></span> Users Connected</h3>
     </div>
     <div id="messageblock">
@@ -51,11 +51,23 @@
         var localID = 0;
         var data = {};
         var localscroll = 100;
+        var missed = 0;
+        var blurred = false;
+        var focused = true;
         function checkScroll(scroll) {
             if (scroll >= 80) {
                 $("#messageblock").mCustomScrollbar("scrollTo","bottom", {
                     scrollInertia:1
                 });
+            } else {
+                missed += 1;
+            }
+            if (blurred) {
+                var ding = new Audio("newmessage.wav");
+                ding.play();
+            }
+            if (scroll >= 90) {
+                missed = 0;
             }
         }
         socket.on('ding', function(arg) {
@@ -74,7 +86,6 @@
             if ($('#m').val().length <= 500) {
         		socket.emit('chat message', $('#m').val(), localID);
         		$('#m').val('');
-                checkScroll(localscroll);
         		return false;
             } else {
                 alert( $("#m").val().length + " is too many characters! It has to be under 500!")
@@ -116,6 +127,28 @@
             }
         });
     });
+    $(window).on("blur focus", function(e) {
+        var prevType = $(this).data("prevType");
+
+        if (prevType != e.type) {   //  reduce double fire issues
+            switch (e.type) {
+                case "blur":
+                    blurred = true;
+                    focused = false;
+                    if (missed > 0 ) {
+                        document.title = "(" + missed + ") New Messages";
+                    }
+                    break;
+                case "focus":
+                    focused = true;
+                    blurred = false;
+                    document.title = "Super Secret Chat";
+                    break;
+            }
+        }
+
+        $(this).data("prevType", e.type);
+    })
     </script>
   </body>
 </html>
