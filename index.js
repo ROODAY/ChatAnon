@@ -26,7 +26,6 @@ Colors.names = {
     darksalmon: "#e9967a",
     darkviolet: "#9400d3",
     fuchsia: "#ff00ff",
-    gold: "#ffd700",
     green: "#008000",
     indigo: "#4b0082",
     magenta: "#ff00ff",
