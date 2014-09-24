@@ -13,3 +13,4 @@ To do
 - [ ] Fix the whole user's connected thing so it updates correctly
 - [ ] Sometimes colors don't work and need a refresh
 - [ ] Fix sizing issues on different browser sizes
+- [ ] Add text formatting (italics/bolds, etc). Try [this](https://github.com/akzhan/jwysiwyg).
