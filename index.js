@@ -59,7 +59,7 @@ io.on('connection', function(socket){
 	console.log('a user connected');
 	data = storage.getItem('data');
 	data.totalUsers += 1;
-	data.users[socket.id] = Colors.random();
+	data.users[socket.id] = Colors.names[Colors.random()];
 	storage.setItem('data', data);
 	socket.emit('senddata', data);
 	socket.emit('localID', socket.id);
