@@ -16,7 +16,6 @@ Colors.names = {
     brown: "#a52a2a",
     darkblue: "#00008b",
     darkcyan: "#008b8b",
-    darkgrey: "#a9a9a9",
     darkgreen: "#006400",
     darkkhaki: "#bdb76b",
     darkmagenta: "#8b008b",
