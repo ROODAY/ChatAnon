@@ -6,5 +6,11 @@ Please don't read me
 To do
 =====
 - [X] Prettify
-- [ ] add random colors to different people
-- [ ] scroll to latest post
+- [X] Add random colors to different people
+- [X] Scroll to latest post
+- [X] Make autoscroll only scroll when close to bottom
+- [ ] Save last 50 messages, push new ones in and pop out old ones, so when someone joins there's something there
+- [X] Fix the whole user's connected thing so it updates correctly
+- [X] Sometimes colors don't work and need a refresh
+- [ ] Fix sizing issues on different browser sizes
+- [ ] Add text formatting (italics/bolds, etc). Try [this](https://github.com/akzhan/jwysiwyg).

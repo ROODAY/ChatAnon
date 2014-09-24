@@ -2,6 +2,26 @@
 <html>
   <head>
     <title>Super Secret Chat</title>
+    <meta name="msapplication-TileColor" content="#FFFFFF">
+    <meta name="msapplication-TileImage" content="favicons/favicon-144.png">
+    <meta name="msapplication-config" content="favicons/browserconfig.xml">
+
+    <link rel="shortcut icon" href="favicons/favicon.ico">
+    <link rel="icon" sizes="16x16 32x32 64x64" href="favicons/favicon.ico">
+    <link rel="icon" type="image/png" sizes="196x196" href="favicons/favicon-196.png">
+    <link rel="icon" type="image/png" sizes="160x160" href="favicons/favicon-160.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="favicons/favicon-96.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="favicons/favicon-64.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicons/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicons/favicon-16.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="favicons/favicon-152.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="favicons/favicon-144.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="favicons/favicon-120.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="favicons/favicon-114.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="favicons/favicon-76.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="favicons/favicon-72.png">
+    <link rel="apple-touch-icon" href="favicons/favicon-57.png">
+
     <link href='http://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
     <link rel="stylesheet" href="css/jquery.mCustomScrollbar.css">
@@ -10,7 +30,7 @@
   </head>
   <body>
     <div id="header">
-        <h1>25.13.12.125:3000</h1>
+        <h1>Super Secret Chat</h1>
         <h3><span id="users"></span> Users Connected</h3>
     </div>
     <div id="messageblock">
@@ -25,39 +45,113 @@
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
     <script src="js/buttons.js"></script>
+    <script src="js/linkify.js"></script>
     <script>
     	var socket = io();
         var localID = 0;
         var data = {};
-    	$('form').submit(function(){
-    		socket.emit('chat message', $('#m').val(), localID);
-    		$('#m').val('');
-    		return false;
-    	});
-    	socket.on('chat message', function(msg, id){
-    		$('#messages').append($('<li style="color: data.users[id];">').text(msg));
-            $("#messageblock").scrollTop($("#messages").position.top+$("#messages").height());
-    	});
-        //id caught here
+        var localscroll = 100;
+        var missed = 0;
+        var blurred = false;
+        var focused = true;
+        function checkScroll(scroll) {
+            if (scroll >= 80) {
+                $("#messageblock").mCustomScrollbar("scrollTo","bottom", {
+                    scrollInertia:1
+                });
+            } else {
+                missed += 1;
+            }
+            if (blurred) {
+                if (missed > 0) {
+                    document.title = "(" + missed + ") New Messages";
+                }
+                var newmessagesound = new Audio("newmessage.wav");
+                newmessagesound.play();
+            }
+            if (scroll >= 90) {
+                missed = 0;
+            }
+        }
+        socket.on('ding', function(arg) {
+            var ding = new Audio("ding.wav");
+            ding.play();
+            return arg;
+        });
         socket.on('localID', function(id) {
             localID = id;
         });
-        socket.on('con', function(num){
-            $('#users').html(num);
-        });
         socket.on('senddata', function(arg){
             data = arg;
+            $('#users').html(arg.totalUsers);
         });
-    </script>
-    <script>
+    	$('form').submit(function(){
+            if ($('#m').val().length <= 500) {
+        		socket.emit('chat message', $('#m').val(), localID);
+        		$('#m').val('');
+        		return false;
+            } else {
+                alert( $("#m").val().length + " is too many characters! It has to be under 500!")
+                return false;
+            }
+    	});
+    	socket.on('chat message', function(msg, id){
+            if (msg != "") {
+                $('#messages').append($('<li style="color:' + data.users[id] + ';">').text(msg).linkify());
+                checkScroll(localscroll);
+            }
+    	});
+
         (function($){
             $(window).load(function(){
                $("#messageblock").mCustomScrollbar({
                     axis:"y",
-                    theme:"dark"
+                    theme:"dark",
+                    callbacks:{
+                        whileScrolling:function(){ 
+                            localscroll = this.mcs.topPct;
+                        }
+                    },
                 });
             });
         })(jQuery);
+    </script>
+    <script>
+    $(document).ready(function(){
+         $("#m").keypress(function(){
+            if ($("#m").val().length > 500) {
+                $("button").removeClass("button-flat-primary");
+                $("button").removeClass("button-flat-caution");
+                $("button").addClass("button-flat-caution");
+            } else {
+                $("button").removeClass("button-flat-primary");
+                $("button").removeClass("button-flat-caution");
+                $("button").addClass("button-flat-primary");
+            }
+        });
+    });
+    $(window).on("blur focus", function(e) {
+        var prevType = $(this).data("prevType");
+
+        if (prevType != e.type) {   //  reduce double fire issues
+            switch (e.type) {
+                case "blur":
+                    blurred = true;
+                    focused = false;
+                    if (missed > 0 ) {
+                        document.title = "(" + missed + ") New Messages";
+                    }
+                    break;
+                case "focus":
+                    focused = true;
+                    blurred = false;
+                    document.title = "Super Secret Chat";
+                    break;
+            }
+        }
+
+        $(this).data("prevType", e.type);
+    })
     </script>
   </body>
 </html>

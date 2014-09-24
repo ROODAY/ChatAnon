@@ -1,7 +1,8 @@
 {
-  "name": "secret-chat-room",
-  "version": "0.1.0",
+  "name": "secret-chatroom",
+  "version": "0.8.0",
   "description": "Cool secret chat stuff",
+  "description": "For super secret things",
   "dependencies": {
     "express": "^4.9.4",
     "socket.io": "^1.1.0",

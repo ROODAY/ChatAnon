@@ -7,21 +7,43 @@ var data = {
 	users: {}, //two dimensional array, first is id, second is color
 	totalUsers: 0
 }
+var oldMessages;
 
-var randomColor = new function(){
-	function rgb(string){
-		return string.match(/\w\w/g).map(function(b){return parseInt(b, 16)})
-	}
-	var rbg1 = rgb("#333333");
-	var rgb2 = rgb("#CCCCCC");
-	var rgb3 = [];
-	for(var i=0; i<3; i++){
-		rgb3 = rgb1[i]+Math.random()*(rgb2[i]-rgb1[i])|0;
-	}
-	var newColor = '#' + rgb3
-		.map(function(n){return n.toString(16)})
-		.map(function(s){return "00".slice(s.length)+s}).join('');
-	return newColor;
+Colors = {};
+Colors.names = {
+    azure: "#f0ffff",
+    blue: "#0000ff",
+    brown: "#a52a2a",
+    darkblue: "#00008b",
+    darkcyan: "#008b8b",
+    darkgreen: "#006400",
+    darkkhaki: "#bdb76b",
+    darkmagenta: "#8b008b",
+    darkolivegreen: "#556b2f",
+    darkorange: "#ff8c00",
+    darkorchid: "#9932cc",
+    darkred: "#8b0000",
+    darksalmon: "#e9967a",
+    darkviolet: "#9400d3",
+    fuchsia: "#ff00ff",
+    green: "#008000",
+    indigo: "#4b0082",
+    magenta: "#ff00ff",
+    maroon: "#800000",
+    navy: "#000080",
+    olive: "#808000",
+    orange: "#ffa500",
+    purple: "#800080",
+    violet: "#800080",
+    red: "#ff0000"
+};
+Colors.random = function() {
+    var result;
+    var count = 0;
+    for (var prop in this.names)
+        if (Math.random() < 1/++count)
+           result = prop;
+    return result;
 };
 
 storage.initSync();
@@ -36,18 +58,18 @@ io.on('connection', function(socket){
 	console.log('a user connected');
 	data = storage.getItem('data');
 	data.totalUsers += 1;
-	data.users[socket.id] = randomColor();
+	data.users[socket.id] = Colors.names[Colors.random()];
 	storage.setItem('data', data);
-	socket.emit('con', data.totalUsers);
-	socket.emit('senddata', data);
+    io.emit('ding', true);
+	io.emit('senddata', data);
 	socket.emit('localID', socket.id);
-	socket.emit('chat message', "A user connected.");
+	io.emit('chat message', "A user connected.");
 	socket.on('disconnect',function(){
 		data.totalUsers -= 1;
 		storage.setItem('data', data);
-		socket.emit('con', data.totalUsers);
+		io.emit('senddata', data);
 		console.log('a user disconnected');
-		socket.emit('chat message', "A user disconnected.");
+		io.emit('chat message', "A user disconnected.");
 	});
 	socket.on('chat message', function(msg, id){
 		io.emit('chat message', msg, id);
