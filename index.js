@@ -65,18 +65,18 @@ io.on('connection', function(socket){
     socket.emit('firstjoin', oldMessages);
     io.emit('ding', true);
 	io.emit('senddata', data);
-	io.emit('chat message', "A user connected.");
+	io.emit('chat message', "A user connected.", "black");
 
 	socket.on('disconnect',function(){
 		data.totalUsers -= 1;
 		storage.setItem('data', data);
 		io.emit('senddata', data);
 		console.log('a user disconnected');
-		io.emit('chat message', "A user disconnected.");
+		io.emit('chat message', "A user disconnected.", "black");
 	});
 
-	socket.on('chat message', function(msg, id){
-		io.emit('chat message', msg, id);
+	socket.on('chat message', function(msg, color){
+		io.emit('chat message', msg, color);
 	});
 
     socket.on('pushli', function(text, color){
