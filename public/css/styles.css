@@ -1,10 +1,10 @@
 * { margin: 0; padding: 0; box-sizing: border-box; }
 body { font: 1em 'Open Sans', Arial; background-color: #ECF0F1;}
-form { padding-top: 3px; padding-bottom: 3px; height: 5vh; width: 100%;}
+form { background-color: #CFD2D3, padding-top: 3px; padding-bottom: 3px; height: 5vh; width: 100%;}
 form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
 form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
 #messages { list-style-type: none; margin: 0 50px 0 10vh padding: 0;}
-#messages li { padding: 5px 10px; /*height: 32px;*/ word-break: break-all;}
+#messages li { padding: 5px 10px; word-break: break-all;}
 #messages li:nth-child(odd) { background: #BAC0C5; }
 
 #header {
