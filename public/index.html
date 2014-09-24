@@ -66,10 +66,15 @@
             $('#users').html(arg.totalUsers);
         });
     	$('form').submit(function(){
-    		socket.emit('chat message', $('#m').val(), localID);
-    		$('#m').val('');
-            checkScroll(localscroll);
-    		return false;
+            if ($('#m').val().length <= 500) {
+        		socket.emit('chat message', $('#m').val(), localID);
+        		$('#m').val('');
+                checkScroll(localscroll);
+        		return false;
+            } else {
+                alert( $("#m").val().length + " is too many characters! It has to be under 500!")
+                return false;
+            }
     	});
     	socket.on('chat message', function(msg, id){
             if (msg != "") {
@@ -91,6 +96,21 @@
                 });
             });
         })(jQuery);
+    </script>
+    <script>
+    $(document).ready(function(){
+         $("#m").keypress(function(){
+            if ($("#m").val().length > 500) {
+                $("button").removeClass("button-flat-primary");
+                $("button").removeClass("button-flat-caution");
+                $("button").addClass("button-flat-caution");
+            } else {
+                $("button").removeClass("button-flat-primary");
+                $("button").removeClass("button-flat-caution");
+                $("button").addClass("button-flat-primary");
+            }
+        });
+    });
     </script>
   </body>
 </html>
