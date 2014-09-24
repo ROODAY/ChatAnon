@@ -66,8 +66,8 @@
                 if (missed > 0) {
                     document.title = "(" + missed + ") New Messages";
                 }
-                var ding = new Audio("newmessage.wav");
-                ding.play();
+                var newmessagesound = new Audio("newmessage.wav");
+                newmessagesound.play();
             }
             if (scroll >= 90) {
                 missed = 0;
