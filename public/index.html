@@ -25,6 +25,7 @@
     <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
     <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
     <script src="js/buttons.js"></script>
+    <script src="js/linkify.js"></script>
     <script>
     	var socket = io();
         var localID = 0;
@@ -52,7 +53,7 @@
     	});
     	socket.on('chat message', function(msg, id){
             if (msg != "") {
-                $('#messages').append($('<li style="color:' + data.users[id] + ';">').text(msg));
+                $('#messages').append($('<li style="color:' + data.users[id] + ';">').text(msg).linkify());
                 checkScroll(localscroll);
             }
     	});
