@@ -5,9 +5,10 @@ var io = require("socket.io")(http);
 var storage = require('node-persist');
 var data = {
 	users: {}, //two dimensional array, first is id, second is color
-	totalUsers: 0
+	totalUsers: 0,
 }
-var oldMessages;
+var oldMessages = [];
+var roomList = [];
 
 Colors = {};
 Colors.names = {
@@ -60,10 +61,14 @@ io.on('connection', function(socket){
 	data.totalUsers += 1;
 	data.users[socket.id] = Colors.names[Colors.random()];
 	storage.setItem('data', data);
+
+    socket.emit('localID', socket.id);
+    var sendstring = JSON.stringify(oldMessages);
+    socket.emit('firstjoin', oldMessages);
     io.emit('ding', true);
 	io.emit('senddata', data);
-	socket.emit('localID', socket.id);
 	io.emit('chat message', "A user connected.");
+
 	socket.on('disconnect',function(){
 		data.totalUsers -= 1;
 		storage.setItem('data', data);
@@ -71,9 +76,21 @@ io.on('connection', function(socket){
 		console.log('a user disconnected');
 		io.emit('chat message', "A user disconnected.");
 	});
+
 	socket.on('chat message', function(msg, id){
 		io.emit('chat message', msg, id);
 	});
+
+    socket.on('pushli', function(text, color){
+        if (oldMessages.length < 51) {
+            var textobject = [text, color]
+            oldMessages.push(textobject);
+        } else {
+            var textobject = [text, color]
+            oldMessages.splice(0,1);
+            oldMessages.push(textobject);
+        }
+    });
 });
 
 http.listen(3000, function(){

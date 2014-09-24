@@ -14,3 +14,4 @@ To do
 - [X] Sometimes colors don't work and need a refresh
 - [ ] Fix sizing issues on different browser sizes
 - [ ] Add text formatting (italics/bolds, etc). Try [this](https://github.com/akzhan/jwysiwyg).
+- [ ] multi room chat
