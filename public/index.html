@@ -58,6 +58,11 @@
                 });
             }
         }
+        socket.on('ding', function(arg) {
+            var ding = new Audio("ding.wav");
+            ding.play();
+            return arg;
+        });
         socket.on('localID', function(id) {
             localID = id;
         });

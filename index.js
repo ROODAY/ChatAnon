@@ -61,15 +61,16 @@ io.on('connection', function(socket){
 	data.totalUsers += 1;
 	data.users[socket.id] = Colors.names[Colors.random()];
 	storage.setItem('data', data);
-	socket.emit('senddata', data);
+    io.emit('ding', true);
+	io.emit('senddata', data);
 	socket.emit('localID', socket.id);
-	socket.emit('chat message', "A user connected.");
+	io.emit('chat message', "A user connected.");
 	socket.on('disconnect',function(){
 		data.totalUsers -= 1;
 		storage.setItem('data', data);
-		socket.emit('senddata', data);
+		io.emit('senddata', data);
 		console.log('a user disconnected');
-		socket.emit('chat message', "A user disconnected.");
+		io.emit('chat message', "A user disconnected.");
 	});
 	socket.on('chat message', function(msg, id){
 		io.emit('chat message', msg, id);
