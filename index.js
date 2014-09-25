@@ -74,9 +74,11 @@ app.get('/', function(req, res){
 io.on('connection', function(socket){
     var userRoom = false;
 	console.log('User Connected. ID: ' + socket.id);
-    socket.emit("joinRoom", "defaultroom");
 
+    roomListPush("ChatAnon");
     io.emit("roomList", roomList);
+    socket.emit("joinRoom", "ChatAnon");
+
     socket.on("joinRoom", function (room) {
         var join = io.sockets.adapter.rooms[room];
 
@@ -97,7 +99,6 @@ io.on('connection', function(socket){
                 users: {},
                 totalUsers: 0
             }
-            console.log(roomdata);
 
             io.to(userRoom).emit("enterRoom", userRoom);
             io.to(userRoom).emit("senddata", roomdata[userRoom]);

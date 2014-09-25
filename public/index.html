@@ -42,7 +42,7 @@
                     <li>Back to Default Room <span class="glyphicon glyphicon-th-list" id="defroombtn"></span></li>
                     <li>
                         Current Rooms:<br>
-                        <div id="roomlist"></div>
+                        <ul id="roomlist"></ul>
                     </li>
                 </ul>
               </div>
@@ -87,6 +87,9 @@
             var room = prompt("Enter the Room ID you wish to join or create.");
             socket.emit("joinRoom", room);
         });
+        $("#defroombtn").click(function() {
+            socket.emit("joinRoom", "ChatAnon");
+        });
 
         function checkScroll(scroll) {
             if (scroll >= 80) {
@@ -117,7 +120,10 @@
         })
 
         socket.on("roomList", function(rl) {
-            $("#roomlist").html(rl);
+            $("#roomlist").html("");
+            rl.forEach(function(room){
+                $("#roomlist").append($("<li>").text(room));
+            });
         });
 
         socket.on("alert", function(msg) {

@@ -80,7 +80,7 @@ h1, .h1, h2, .h2, h3, .h3 {
     height: 87vh;
     overflow-x: hidden;
 }
-#rules ul {
+#roomlist {
     list-style-type: none;
 }
 #send {
