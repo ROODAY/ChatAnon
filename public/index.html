@@ -24,13 +24,34 @@
 
     <link href='http://fonts.googleapis.com/css?family=Source+Code+Pro' rel='stylesheet' type='text/css'>
     <link href='http://fonts.googleapis.com/css?family=Open+Sans' rel='stylesheet' type='text/css'>
-    <link rel="stylesheet" href="css/jquery.mCustomScrollbar.css">
-    <link rel="stylesheet" href="css/buttons.css">
+    <link rel="stylesheet" href="css/vendor/bootstrap.min.css">
+    <link rel="stylesheet" href="css/vendor/jquery.mCustomScrollbar.css">
+    <link rel="stylesheet" href="css/vendor/buttons.css">
     <link rel="stylesheet" href="css/styles.css">
   </head>
   <body>
+    <div id="options">
+        <span class="glyphicon glyphicon-cog" data-toggle="modal" data-target="#myModal"></span>
+        <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-body">
+                Options:
+                <ul style="list-style-type: none;">
+                    <li>Stuff</li>
+                    <li>Stuff</li>
+                    <li>Stuff</li>
+                </ul>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
     <div id="header">
-        <h1>Super Secret Chat</h1>
+        <h1>Super Secret Chat:</h1>
         <h3><span id="users"></span> Users Connected</h3>
     </div>
     <div id="messageblock">
@@ -46,6 +67,7 @@
     <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
     <script src="js/buttons.js"></script>
     <script src="js/linkify.js"></script>
+    <script src="js/bootstrap.min.js"></script>
     <script>
     	var socket = io();
         var localID = 0;
@@ -56,7 +78,11 @@
         var focused = true;
         var lastmsg = Date.now();
         var nummessages = $("#messages").children().length;
-        console.log(data.users);
+        var commands = {
+            help: "Here are the commands: ",
+            unknown: "That is not a valid command."
+        }
+
         function checkScroll(scroll) {
             if (scroll >= 80) {
                 $("#messageblock").mCustomScrollbar("scrollTo","bottom", {
@@ -76,6 +102,7 @@
                 missed = 0;
             }
         }
+
         socket.on('firstjoin', function(oldmessages) {
             for (var i = 0; i < oldmessages.length; i++) {
                 $('#messages').append($('<li style="color:' + oldmessages[i][1] + ';">').text(oldmessages[i][0]).linkify());
@@ -84,11 +111,6 @@
                 }
             }
         });
-        socket.on('ding', function(arg) {
-            var ding = new Audio("ding.wav");
-            ding.play();
-            return arg;
-        });
         socket.on('localID', function(id) {
             localID = id;
         });
@@ -96,22 +118,46 @@
             data = arg;
             $('#users').html(arg.totalUsers);
         });
+
+        socket.on('ding', function(arg) {
+            var ding = new Audio("ding.wav");
+            ding.play();
+            return arg;
+        });
+
     	$('form').submit(function(){
-            if ($('#m').val().length <= 500) {
-                if (((Date.now() - lastmsg) / 1000) > 1.5) {
-            		socket.emit('chat message', $('#m').val(), data.users[localID]);
-            		$('#m').val('');
-                    lastmsg = Date.now();
-            		return false;
+            var cmdtest = $("#m").val();
+            if (cmdtest[0] === "/") {
+                cmdtest = cmdtest.substr(1);
+                $('#m').val('');
+                if (cmdtest === "help") {
+                    $('#messages').append($('<li style="color: \'black\';" class="rainbow">').text(commands[cmdtest]).linkify());
                 } else {
-                    alert("Please wait 1.5 seconds between messages!");
-                    return false;  
+                    $('#messages').append($('<li style="color: \'black\';" class="rainbow">').text(commands.unknown).linkify());
                 }
-            } else {
-                alert( $("#m").val().length + " is too many characters! It has to be under 500!")
+                checkScroll(localscroll);
                 return false;
+            } else {
+                if ($('#m').val().length <= 500) {
+                    if (((Date.now() - lastmsg) / 1000) > 1.5) {
+                        socket.emit('chat message', $('#m').val(), data.users[localID]);
+                        $('#m').val('');
+                        lastmsg = Date.now();
+                        return false;
+                    } else {
+                        if ($("#m").val().length > 0) {
+                            $('#messages').append($('<li style="color: \'black\';" class="rainbow">').text("You must wait 1.5 seconds between messages!").linkify());
+                            checkScroll(localscroll);
+                        }
+                        return false;  
+                    }
+                } else {
+                    alert( $("#m").val().length + " is too many characters! It has to be under 500!")
+                    return false;
+                }
             }
     	});
+
     	socket.on('chat message', function(msg, color){
             if (msg != "") {
                 $('#messages').append($('<li style="color:' + color + ';">').text(msg).linkify());
@@ -119,10 +165,15 @@
                 if (nummessages > 50) {
                     $("#messages:first-child").remove();
                 }
-                socket.emit('pushli', msg, data.users[localID]);
+                socket.emit('pushli', msg, color);
                 checkScroll(localscroll);
             }
     	});
+
+        socket.on('console chat message', function(msg){
+                $('#messages').append($('<li style="color:\'black\';" class="rainbow">').text(msg).linkify());
+                checkScroll(localscroll);
+        });
 
         (function($){
             $(window).load(function(){

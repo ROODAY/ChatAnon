@@ -12,6 +12,6 @@ To do
 - [X] Save last 50 messages, push new ones in and pop out old ones, so when someone joins there's something there
 - [X] Fix the whole user's connected thing so it updates correctly
 - [X] Sometimes colors don't work and need a refresh
-- [ ] Fix sizing issues on different browser sizes
+- [X] Fix sizing issues on different browser sizes
 - [ ] Add text formatting (italics/bolds, etc). Try [this](https://github.com/akzhan/jwysiwyg).
 - [ ] multi room chat

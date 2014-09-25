@@ -10,6 +10,20 @@ var data = {
 var oldMessages = [];
 var roomList = [];
 
+function roomListRemove(member) { //removes member from roomList
+    var index = roomList.indexOf(member);
+    if (index > -1) {
+        roomList.splice(index,1);
+    }
+}
+
+function roomListPush(member) {
+    var index = roomList.indexOf(member);
+    if (index == -1) { //if member doesn't already exist
+        roomList.push(member);
+    }
+}
+
 Colors = {};
 Colors.names = {
     blue: "#0000ff",
@@ -55,24 +69,66 @@ app.get('/', function(req, res){
 });
 
 io.on('connection', function(socket){
-	console.log('a user connected');
+    var userRoom = false;
+	console.log('User Connected. ID: ' + socket.id);
+
+    io.emit("roomList", roomList);
+    socket.on("joinRoom", function (room) {
+        var join = io.sockets.adapter.rooms[room];
+
+        if (!join || Object.keys(join).length < CONST_USER_CAP) {
+            if (userRoom != false) {
+                socket.leave(userRoom);
+                if (io.sockets.adapter.rooms[userRoom].length == 0) {
+                    delete io.sockets.adapter.rooms[userRoom];
+                    roomListRemove(userRoom);                
+                }
+            }
+
+            userRoom = room;
+            socket.join(userRoom);
+            roomListPush(userRoom);
+
+            io.to(userRoom).emit("enterRoom", userRoom);
+            io.to(userRoom).emit("userCount", Object.keys(io.sockets.adapter.rooms[userRoom]).length);
+            io.emit("roomList", roomList);
+
+        }
+
+    });
+    socket.on("disconnect", function(){
+        if (userRoom) {
+            console.log("User " + socket.id + " left room " + userRoom);
+
+            socket.leave(userRoom);
+            io.to(userRoom).emit("userCount", Object.keys(io.sockets.adapter.rooms[userRoom]).length);
+            if (io.sockets.adapter.rooms[userRoom].length == 0) {
+                delete io.sockets.adapter.rooms[userRoom];
+                roomListRemove(userRoom);
+            }
+
+            io.emit("roomList", roomList);
+        }
+    })
+
 	data = storage.getItem('data');
 	data.totalUsers += 1;
 	data.users[socket.id] = Colors.names[Colors.random()];
 	storage.setItem('data', data);
 
+
     socket.emit('localID', socket.id);
     socket.emit('firstjoin', oldMessages);
     io.emit('ding', true);
 	io.emit('senddata', data);
-	io.emit('chat message', "A user connected.", "black");
+	io.emit('console chat message', "A user connected.");
 
 	socket.on('disconnect',function(){
 		data.totalUsers -= 1;
 		storage.setItem('data', data);
 		io.emit('senddata', data);
-		console.log('a user disconnected');
-		io.emit('chat message', "A user disconnected.", "black");
+		console.log('User Disconnected. ID: ' + socket.id);
+		io.emit('console chat message', "A user disconnected.");
 	});
 
 	socket.on('chat message', function(msg, color){
@@ -94,3 +150,22 @@ io.on('connection', function(socket){
 http.listen(3000, function(){
   console.log('listening on *:3000');
 });
+
+function findClientsSocket(roomId, namespace) {
+    var res = []
+    , ns = io.of(namespace ||"/");    // the default namespace is "/"
+
+    if (ns) {
+        for (var id in ns.connected) {
+            if(roomId) {
+                var index = ns.connected[id].rooms.indexOf(roomId) ;
+                if(index !== -1) {
+                    res.push(ns.connected[id]);
+                }
+            } else {
+                res.push(ns.connected[id]);
+            }
+        }
+    }
+    return res;
+}

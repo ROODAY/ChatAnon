@@ -1,29 +1,83 @@
-* { margin: 0; padding: 0; box-sizing: border-box; }
-body { font: 1em 'Open Sans', Arial; background-color: #ECF0F1;}
-form { background-color: #CFD2D3, padding-top: 3px; padding-bottom: 3px; height: 5vh; width: 100%;}
-form input { border: 0; padding: 10px; width: 90%; margin-right: .5%; }
-form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 10px; }
-#messages { list-style-type: none; margin: 0 50px 0 10vh padding: 0;}
-#messages li { padding: 5px 10px; word-break: break-all;}
-#messages li:nth-child(odd) { background: #BAC0C5; }
+@-webkit-keyframes super-rainbow {
+  0%   { color: #d24d57; } 
+  17%  { color: #f51b35; }
+  34%  { color: #f4d03f; }
+  51%  { color: #26c281; }
+  68%  { color: #3498db; }
+  85%  { color: #1f3a93; }
+  100% { color: #913d88; }
+}
+@-moz-keyframes super-rainbow {
+  0%   { color: #d24d57; } 
+  17%  { color: #f51b35; }
+  34%  { color: #f4d03f; }
+  51%  { color: #26c281; }
+  68%  { color: #3498db; }
+  85%  { color: #1f3a93; }
+  100% { color: #913d88; }
+}
 
+* { 
+    margin: 0; 
+    padding: 0; 
+    box-sizing: border-box; 
+}
+body { 
+    font: 2rem 'Open Sans', Arial; 
+    background-color: #ECF0F1;
+}
+form { 
+    background-color: #BAC0C5;
+    padding-top: 3px; 
+    padding-bottom: 3px;
+}
+form input { 
+    border: 0; 
+    padding: 10px; 
+    width: 90%; 
+    margin-right: .5%; 
+}
+form button { 
+    width: 9%;
+    border: none; 
+    padding: 10px; 
+}
+#messages { 
+    list-style-type: none;
+    padding: 0;
+}
+#messages li { 
+    padding: 5px 10px; 
+    word-break: break-all;
+}
+#messages li:nth-child(odd) { 
+    background: #CFD2D3; 
+}
 #header {
-    margin: 0;
+    margin-bottom: 1vh;
     padding: 0;
     width: 100%;
-    font-size: 2em;
     font-family: 'Source Code Pro', sans-serif;
     text-align: center;
     color: #4183D7;
+    height: 5vh;
 }
 #header * {
     display: inline-block;
 }
+h1 {
+    font-size: 4rem;
+}
+h3 {
+    font-size: 2.5rem;
+}
+h1, .h1, h2, .h2, h3, .h3 {
+    margin-top: 0;
+    margin-bottom: 3px;
+}
 #messageblock {
-    clear: both;
-    float: left;
     width: 100%;
-    height: 85vh;
+    height: 87vh;
     overflow-x: hidden;
 }
 #rules ul {
@@ -31,4 +85,33 @@ form button { width: 9%; background: rgb(130, 224, 255); border: none; padding: 
 }
 #send {
     clear: both;
+    position: fixed;
+    bottom: 0;
+    width: 100%;
+    height: 5vh;
+}
+#options span {
+    position: fixed;
+    right: 5px;
+    top: 5px;
+    cursor: pointer;
+    font-size: 2rem;
+    color: #4183D7;
+}
+.rainbow {
+    -webkit-animation: super-rainbow 5s infinite alternate; 
+    -moz-animation: super-rainbow 5s infinite alternate;
+}
+
+/*phones*/
+@media (max-width: 767px) {
+  
+}
+/*tablets*/
+@media (min-width: 768px) and (max-width: 991px) {
+
+}
+/*small desktops/laptops*/
+@media (min-width: 992px) and (max-width: 1199px) {
+
 }
