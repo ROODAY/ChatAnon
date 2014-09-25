@@ -1,4 +1,4 @@
-SecretChatRoom
+ChatAnon
 ==============
 
 ![Please don't read me](public/favicons/anon.png)
