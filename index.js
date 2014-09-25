@@ -7,6 +7,8 @@ var data = {
 	users: {}, //two dimensional array, first is id, second is color
 	totalUsers: 0,
 }
+var roomdata = {
+}
 var oldMessages = [];
 var roomList = [];
 
@@ -62,6 +64,7 @@ Colors.random = function() {
 
 storage.initSync();
 storage.setItem('data', data);
+storage.setItem('roomdata', roomdata);
 
 app.use(express.static(__dirname + '/public'));
 app.get('/', function(req, res){
@@ -71,12 +74,13 @@ app.get('/', function(req, res){
 io.on('connection', function(socket){
     var userRoom = false;
 	console.log('User Connected. ID: ' + socket.id);
+    socket.emit("joinRoom", "defaultroom");
 
     io.emit("roomList", roomList);
     socket.on("joinRoom", function (room) {
         var join = io.sockets.adapter.rooms[room];
 
-        if (!join || Object.keys(join).length < CONST_USER_CAP) {
+        if (!join) {
             if (userRoom != false) {
                 socket.leave(userRoom);
                 if (io.sockets.adapter.rooms[userRoom].length == 0) {
@@ -88,11 +92,20 @@ io.on('connection', function(socket){
             userRoom = room;
             socket.join(userRoom);
             roomListPush(userRoom);
+            roomdata[userRoom] = {
+                name: userRoom,
+                users: {},
+                totalUsers: 0
+            }
+            console.log(roomdata);
 
             io.to(userRoom).emit("enterRoom", userRoom);
+            io.to(userRoom).emit("senddata", roomdata[userRoom]);
             io.to(userRoom).emit("userCount", Object.keys(io.sockets.adapter.rooms[userRoom]).length);
             io.emit("roomList", roomList);
 
+        } else {
+            socket.emit("alert", "You are already in that room!");
         }
 
     });
@@ -112,6 +125,7 @@ io.on('connection', function(socket){
     })
 
 	data = storage.getItem('data');
+    roomdata = storage.getItem('roomdata');
 	data.totalUsers += 1;
 	data.users[socket.id] = Colors.names[Colors.random()];
 	storage.setItem('data', data);

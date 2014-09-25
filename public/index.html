@@ -1,7 +1,7 @@
 <!DOCTYPE html>
 <html>
   <head>
-    <title>Super Secret Chat</title>
+    <title>ChatAnon</title>
     <meta name="msapplication-TileColor" content="#FFFFFF">
     <meta name="msapplication-TileImage" content="favicons/favicon-144.png">
     <meta name="msapplication-config" content="favicons/browserconfig.xml">
@@ -31,16 +31,19 @@
   </head>
   <body>
     <div id="options">
-        <span class="glyphicon glyphicon-cog" data-toggle="modal" data-target="#myModal"></span>
+        <span id="mainbtn" class="glyphicon glyphicon-cog" data-toggle="modal" data-target="#myModal"></span>
         <div class="modal fade" id="myModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-body">
                 Options:
                 <ul style="list-style-type: none;">
-                    <li>Stuff</li>
-                    <li>Stuff</li>
-                    <li>Stuff</li>
+                    <li>Join/Create a Room <span class="glyphicon glyphicon-plus" id="joinroombtn"></span></li>
+                    <li>Back to Default Room <span class="glyphicon glyphicon-th-list" id="defroombtn"></span></li>
+                    <li>
+                        Current Rooms:<br>
+                        <div id="roomlist"></div>
+                    </li>
                 </ul>
               </div>
               <div class="modal-footer">
@@ -51,7 +54,7 @@
         </div>
     </div>
     <div id="header">
-        <h1>Super Secret Chat:</h1>
+        <h1><span id="roomname"></span>:</h1>
         <h3><span id="users"></span> Users Connected</h3>
     </div>
     <div id="messageblock">
@@ -70,18 +73,20 @@
     <script src="js/bootstrap.min.js"></script>
     <script>
     	var socket = io();
-        var localID = 0;
         var data = {};
+        var localID = 0;
+        var localColor = 0;
         var localscroll = 100;
         var missed = 0;
         var blurred = false;
         var focused = true;
         var lastmsg = Date.now();
         var nummessages = $("#messages").children().length;
-        var commands = {
-            help: "Here are the commands: ",
-            unknown: "That is not a valid command."
-        }
+
+        $("#joinroombtn").click(function() {
+            var room = prompt("Enter the Room ID you wish to join or create.");
+            socket.emit("joinRoom", room);
+        });
 
         function checkScroll(scroll) {
             if (scroll >= 80) {
@@ -103,6 +108,22 @@
             }
         }
 
+        socket.on("enterRoom", function(room) {
+            if (room != false) {
+                alert("You have entered room " + room + "!");
+            } else {
+                alert("Error. Please try another room.");
+            }
+        })
+
+        socket.on("roomList", function(rl) {
+            $("#roomlist").html(rl);
+        });
+
+        socket.on("alert", function(msg) {
+            alert(msg);
+        });
+
         socket.on('firstjoin', function(oldmessages) {
             for (var i = 0; i < oldmessages.length; i++) {
                 $('#messages').append($('<li style="color:' + oldmessages[i][1] + ';">').text(oldmessages[i][0]).linkify());
@@ -116,6 +137,8 @@
         });
         socket.on('senddata', function(arg){
             data = arg;
+            localColor = data.users[localID];
+            $("#roomname").html(arg.roomname)
             $('#users').html(arg.totalUsers);
         });
 
@@ -131,16 +154,18 @@
                 cmdtest = cmdtest.substr(1);
                 $('#m').val('');
                 if (cmdtest === "help") {
-                    $('#messages').append($('<li style="color: \'black\';" class="rainbow">').text(commands[cmdtest]).linkify());
+                    $('#messages').append($('<li style="color: \'black\';" class="rainbow">').text("The commands are: ").linkify());
+                } else if (cmdtest === "setcolor") {
+                    localColor = prompt("Type a valid html color. (ex. #333333, rgb(23,53,100), 'red')");
                 } else {
-                    $('#messages').append($('<li style="color: \'black\';" class="rainbow">').text(commands.unknown).linkify());
+                    $('#messages').append($('<li style="color: \'black\';" class="rainbow">').text("That is not a valid command.").linkify());
                 }
                 checkScroll(localscroll);
                 return false;
             } else {
                 if ($('#m').val().length <= 500) {
                     if (((Date.now() - lastmsg) / 1000) > 1.5) {
-                        socket.emit('chat message', $('#m').val(), data.users[localID]);
+                        socket.emit('chat message', $('#m').val(), localColor);
                         $('#m').val('');
                         lastmsg = Date.now();
                         return false;
