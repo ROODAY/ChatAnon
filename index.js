@@ -1,5 +1,6 @@
 var express = require('express');
 var app = express();
+var markdown = require('marked');
 var http = require('http').Server(app);
 var io = require("socket.io")(http);
 var storage = require('node-persist');

@@ -66,11 +66,12 @@
         </form>
     </div>
     <script src="/socket.io/socket.io.js"></script>
-    <script src="http://code.jquery.com/jquery-1.11.1.js"></script>
+    <script src="js/jquery.js"></script>
     <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
     <script src="js/buttons.js"></script>
     <script src="js/linkify.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/marked.js"></script>
     <script>
     	var socket = io();
         var data = {};
@@ -133,6 +134,7 @@
         socket.on('firstjoin', function(oldmessages) {
             for (var i = 0; i < oldmessages.length; i++) {
                 $('#messages').append($('<li style="color:' + oldmessages[i][1] + ';">').text(oldmessages[i][0]).linkify());
+                $('#messages li:last').html(marked($('#messages li:last').html()));
                 if (nummessages > 50) {
                     $("#messages:first-child").remove();
                 }
@@ -192,6 +194,7 @@
     	socket.on('chat message', function(msg, color){
             if (msg != "") {
                 $('#messages').append($('<li style="color:' + color + ';">').text(msg).linkify());
+                $('#messages li:last').html(marked($('#messages li:last').html()));
                 nummessages = $("#messages li").children().length;
                 if (nummessages > 50) {
                     $("#messages:first-child").remove();

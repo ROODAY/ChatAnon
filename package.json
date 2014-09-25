@@ -1,11 +1,11 @@
 {
   "name": "secret-chatroom",
   "version": "0.9.0",
-  "description": "Cool secret chat stuff",
   "description": "For super secret things",
   "dependencies": {
     "express": "^4.9.4",
     "socket.io": "^1.1.0",
-    "node-persist": "^0.0.2"
+    "node-persist": "^0.0.2",
+    "marked": "~0.3.2"
   }
 }
