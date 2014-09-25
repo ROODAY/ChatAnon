@@ -1,6 +1,6 @@
 {
   "name": "secret-chatroom",
-  "version": "0.8.0",
+  "version": "0.9.0",
   "description": "Cool secret chat stuff",
   "description": "For super secret things",
   "dependencies": {
