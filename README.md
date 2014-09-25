@@ -1,7 +1,7 @@
 SecretChatRoom
 ==============
 
-Please don't read me
+![Please don't read me](public/favicons/anon.png)
 
 To do
 =====

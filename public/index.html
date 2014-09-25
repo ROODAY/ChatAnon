@@ -134,8 +134,10 @@
             for (var i = 0; i < oldmessages.length; i++) {
                 $('#messages').append($('<li style="color:' + oldmessages[i][1] + ';">').text(oldmessages[i][0]));
                 $('#messages li:last').html(marked($('#messages li:last').html()));
-                if (nummessages > 50) {
+                nummessages = $("#messages li").children().length;
+                while (nummessages > 50) {
                     $("#messages:first-child").remove();
+                    nummessages = $("#messages li").children().length;
                 }
             }
         });
@@ -195,8 +197,9 @@
                 $('#messages').append($('<li style="color:' + color + ';">').text(msg));
                 $('#messages li:last').html(marked($('#messages li:last').html()));
                 nummessages = $("#messages li").children().length;
-                if (nummessages > 50) {
+                while (nummessages > 50) {
                     $("#messages:first-child").remove();
+                    nummessages = $("#messages li").children().length;
                 }
                 socket.emit('pushli', msg, color);
                 checkScroll(localscroll);
