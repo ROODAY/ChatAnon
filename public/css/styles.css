@@ -100,6 +100,19 @@ h1, .h1, h2, .h2, h3, .h3 {
     font-size: 2rem;
     color: #4183D7;
 }
+#frog {
+  width: 500px;
+  height: 500px;
+  z-index: 99999;
+  position: fixed;
+  opacity: 0.0;
+  right: 0;
+  bottom: 0;
+  -webkit-transition: opacity 1.5s ease !important;
+  -moz-transition: opacity 1.5s ease !important;
+  -o-transition: opacity 1.5s ease !important;
+  transition: opacity 1.5s ease !important;
+}
 .rainbow {
     -webkit-animation: super-rainbow 5s infinite alternate; 
     -moz-animation: super-rainbow 5s infinite alternate;
