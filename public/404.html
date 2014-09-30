@@ -44,6 +44,7 @@
 			-webkit-animation: super-rainbow 5s infinite alternate; 
     		-moz-animation: super-rainbow 5s infinite alternate;
     		text-align: center;
+    		overflow: hidden;
 		}
 		#mufasa {
 			margin: 0 auto;
@@ -75,7 +76,12 @@
 	</video>
 	<img src="giphy.gif" alt="frog1" id="frog1">
 	<img src="giphy.gif" alt="frog2" id="frog2">
+	<script src="js/jquery.js"></script>
 	<script>
+		var clientWidth = document.documentElement.clientWidth;
+		var clientHeight = document.documentElement.clientHeight;
+		$("#mufasa").css("width", clientWidth);
+		$("#mufasa").css("height", clientHeight);
 		var music = new Audio('404.wav'); 
 		music.volume = 0.15;
 		music.addEventListener('ended', function() {
