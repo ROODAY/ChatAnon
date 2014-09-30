@@ -89,6 +89,12 @@
 		    this.play();
 		}, false);
 		music.play();
+		$( window ).resize(function() {
+		  	clientWidth = document.documentElement.clientWidth;
+			clientHeight = document.documentElement.clientHeight;
+			$("#mufasa").css("width", clientWidth);
+			$("#mufasa").css("height", clientHeight);
+		});
 	</script>
 </body>
 </html>
