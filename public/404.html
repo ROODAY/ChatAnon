@@ -1,0 +1,88 @@
+<!DOCTYPE html>
+<html>
+<head>
+	<title>404 Bro</title>
+	<meta name="msapplication-TileColor" content="#FFFFFF">
+    <meta name="msapplication-TileImage" content="favicons/favicon-144.png">
+    <meta name="msapplication-config" content="favicons/browserconfig.xml">
+
+    <link rel="shortcut icon" href="favicons/favicon.ico">
+    <link rel="icon" sizes="16x16 32x32 64x64" href="favicons/favicon.ico">
+    <link rel="icon" type="image/png" sizes="196x196" href="favicons/favicon-196.png">
+    <link rel="icon" type="image/png" sizes="160x160" href="favicons/favicon-160.png">
+    <link rel="icon" type="image/png" sizes="96x96" href="favicons/favicon-96.png">
+    <link rel="icon" type="image/png" sizes="64x64" href="favicons/favicon-64.png">
+    <link rel="icon" type="image/png" sizes="32x32" href="favicons/favicon-32.png">
+    <link rel="icon" type="image/png" sizes="16x16" href="favicons/favicon-16.png">
+    <link rel="apple-touch-icon" sizes="152x152" href="favicons/favicon-152.png">
+    <link rel="apple-touch-icon" sizes="144x144" href="favicons/favicon-144.png">
+    <link rel="apple-touch-icon" sizes="120x120" href="favicons/favicon-120.png">
+    <link rel="apple-touch-icon" sizes="114x114" href="favicons/favicon-114.png">
+    <link rel="apple-touch-icon" sizes="76x76" href="favicons/favicon-76.png">
+    <link rel="apple-touch-icon" sizes="72x72" href="favicons/favicon-72.png">
+    <link rel="apple-touch-icon" href="favicons/favicon-57.png">
+	<style>
+		@-webkit-keyframes super-rainbow {
+		  0%   { background-color: #d24d57; } 
+		  17%  { background-color: #f51b35; }
+		  34%  { background-color: #f4d03f; }
+		  51%  { background-color: #26c281; }
+		  68%  { background-color: #3498db; }
+		  85%  { background-color: #1f3a93; }
+		  100% { background-color: #913d88; }
+		}
+		@-moz-keyframes super-rainbow {
+		  0%   { background-color: #d24d57; } 
+		  17%  { background-color: #f51b35; }
+		  34%  { background-color: #f4d03f; }
+		  51%  { background-color: #26c281; }
+		  68%  { background-color: #3498db; }
+		  85%  { background-color: #1f3a93; }
+		  100% { background-color: #913d88; }
+		}
+		body {
+			-webkit-animation: super-rainbow 5s infinite alternate; 
+    		-moz-animation: super-rainbow 5s infinite alternate;
+    		text-align: center;
+		}
+		#mufasa {
+			margin: 0 auto;
+			width: 600;
+			display: block;
+		}
+		#frog1 {
+			position: absolute;
+	        bottom: 0;
+	        right: 0;
+		}
+		#frog2 {
+			-moz-transform: scaleX(-1);
+	        -o-transform: scaleX(-1);
+	        -webkit-transform: scaleX(-1);
+	        transform: scaleX(-1);
+	        filter: FlipH;
+	        -ms-filter: "FlipH";
+	        position: absolute;
+	        bottom: 0;
+	        left: 0;
+		}
+	</style>
+</head>
+<body class="super-rainbow">
+	<video width="600" height="336" autoplay="autoplay" loop id="mufasa">
+	  <source src="404.webm" type="video/webm">
+	  Your browser does not support the video tag.
+	</video>
+	<img src="giphy.gif" alt="frog1" id="frog1">
+	<img src="giphy.gif" alt="frog2" id="frog2">
+	<script>
+		var music = new Audio('404.wav'); 
+		music.volume = 0.15;
+		music.addEventListener('ended', function() {
+		    this.currentTime = 0;
+		    this.play();
+		}, false);
+		music.play();
+	</script>
+</body>
+</html>

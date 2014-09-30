@@ -68,8 +68,11 @@ storage.setItem('data', data);
 storage.setItem('roomdata', roomdata);
 
 app.use(express.static(__dirname + '/public'));
+app.use(function(req, res, next){
+  res.sendFile(__dirname + "/public/404.html");
+});
 app.get('/', function(req, res){
-  res.sendfile(__dirname + '/index.html');
+    res.sendFile(__dirname + '/index.html');
 });
 
 io.on('connection', function(socket){
