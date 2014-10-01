@@ -118,6 +118,25 @@ h1, .h1, h2, .h2, h3, .h3 {
     -moz-animation: super-rainbow 5s infinite alternate;
 }
 
+.sweet-alert .icon.error .line {
+  top: 35px;
+}
+.sweet-alert .icon.error .line.right {
+  right: 13px;
+}
+.sweet-alert .icon.error .line.left {
+  left: 13px;
+}
+.sweet-alert .icon.success .placeholder {
+  top: 0;
+}
+.sweet-alert .icon.success .line.long {
+  right: 3px;
+}
+.sweet-alert .icon.success .line.tip {
+  left: 10px;
+}
+
 /*phones*/
 @media (max-width: 767px) {
   
