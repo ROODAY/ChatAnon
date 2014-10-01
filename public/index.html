@@ -119,6 +119,7 @@
     <link rel="stylesheet" href="css/vendor/bootstrap.min.css">
     <link rel="stylesheet" href="css/vendor/jquery.mCustomScrollbar.css">
     <link rel="stylesheet" href="css/vendor/buttons.css">
+    <link rel="stylesheet" href="css/vendor/sweetalert.css">
     <link rel="stylesheet" href="css/styles.css">
   </head>
   <body>
@@ -147,7 +148,7 @@
         </div>
     </div>
     <div id="header">
-        <h1><span id="roomname"></span>:</h1>
+        <h1><span id="roomname">ChatAnon</span>:</h1>
         <h3><span id="users"></span> Users Connected</h3>
     </div>
     <div id="messageblock">
@@ -161,11 +162,12 @@
     <script src="/socket.io/socket.io.js"></script>
     <script src="js/jquery.js"></script>
     <script src="js/jquery.mCustomScrollbar.concat.min.js"></script>
-    <script src="js/buttons.js"></script>
     <script src="js/bootstrap.min.js"></script>
+    <script src="js/buttons.js"></script>
     <script src="js/keypress.min.js"></script>
     <script src="js/illookinati.js"></script>
     <script src="js/marked.js"></script>
+    <script src="js/sweetalert.js"></script>
     <script>
     	var socket = io();
         var data = {};
@@ -180,7 +182,9 @@
 
         $("#joinroombtn").click(function() {
             var room = prompt("Enter the Room ID you wish to join or create.");
-            socket.emit("joinRoom", room);
+            if (room !== "" && room !== null && room !== undefined) {
+                socket.emit("joinRoom", room);
+            }
         });
         $("#defroombtn").click(function() {
             socket.emit("joinRoom", "ChatAnon");
@@ -207,10 +211,11 @@
         }
 
         socket.on("enterRoom", function(room) {
-            if (room != false) {
-                alert("You have entered room " + room + "!");
+            if (room !== false && room !== null && room !== undefined) {
+                sweetAlert("Success!","You have entered room " + room + "!","success");
+                $("#roomname").html(room);
             } else {
-                alert("Error. Please try another room.");
+                sweetAlert("Error.","Please try another room.","error");
             }
         })
 
@@ -264,8 +269,7 @@
                         return false;
                     } else {
                         if ($("#m").val().length > 0) {
-                            $('#messages').append($('<li style="color: \'black\';" class="rainbow">').text("You must wait 1.5 seconds between messages!"));
-                            checkScroll(localscroll);
+                            sweetAlert("Hold Up!", "You gotta wait at least 1.5 seconds between messages!", "error");
                         }
                         return false;  
                     }
