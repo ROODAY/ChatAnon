@@ -179,6 +179,16 @@
         var focused = true;
         var lastmsg = Date.now();
         var nummessages = $("#messages").children().length;
+        marked.setOptions({
+          renderer: new marked.Renderer(),
+          gfm: true,
+          tables: true,
+          breaks: true,
+          pedantic: false,
+          sanitize: true,
+          smartLists: true,
+          smartypants: true
+        });
 
         $("#joinroombtn").click(function() {
             var room = prompt("Enter the Room ID you wish to join or create.");
