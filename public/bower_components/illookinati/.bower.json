@@ -1,0 +1,29 @@
+{
+  "name": "illookinati",
+  "homepage": "http://herkyl.github.io/illookinati/",
+  "authors": [
+    "Serge Herkül <s.herkyl@gmail.com>"
+  ],
+  "description": "Illookinati is wathing us",
+  "main": "./src/main.js",
+  "license": "MIT",
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests",
+    "images/",
+    "index.html"
+  ],
+  "_release": "d8a14dea4b",
+  "_resolution": {
+    "type": "branch",
+    "branch": "master",
+    "commit": "d8a14dea4b2964c3b8f55f4f9d30987bf5ee9a63"
+  },
+  "_source": "git://github.com/herkyl/illookinati.git",
+  "_target": "*",
+  "_originalSource": "illookinati",
+  "_direct": true
+}
