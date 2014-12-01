@@ -291,7 +291,7 @@
     	});
 
     	socket.on('chat message', function(msg, color){
-            if (msg != "") {
+            if (msg != "" && msg != undefined && msg != null) {
                 $('#messages').append($('<li style="color:' + color + ';">').text(msg));
                 $('#messages li:last').html(marked($('#messages li:last').html()));
                 nummessages = $("#messages li").children().length;
