@@ -68,43 +68,42 @@ app.get('/', function(req, res){
 });
 
 io.on('connection', function(socket){
-    var userRoom = false;
+    socket.join("ChatAnon");
 	console.log('User Connected. ID: ' + socket.id);
 
     roomListPush("ChatAnon");
     io.emit("roomList", roomList);
-    socket.emit("joinRoom", "ChatAnon");
 
-    socket.on("joinRoom", function (room) {
-        var join = io.sockets.adapter.rooms[room];
-        if (!join) {
-            if (userRoom != false) {
-                socket.leave(userRoom);
-                if (io.sockets.adapter.rooms[userRoom].length == 0) {
-                    delete io.sockets.adapter.rooms[userRoom];
-                    roomListRemove(userRoom);                
-                }
-            }
+    // socket.on("joinRoom", function (room) {
+    //     var join = io.sockets.adapter.rooms[room];
+    //     if (!join) {
+    //         if (userRoom != false) {
+    //             socket.leave(userRoom);
+    //             if (io.sockets.adapter.rooms[userRoom].length == 0) {
+    //                 delete io.sockets.adapter.rooms[userRoom];
+    //                 roomListRemove(userRoom);                
+    //             }
+    //         }
 
-            userRoom = room;
-            socket.join(userRoom);
-            roomListPush(userRoom);
-            roomdata[userRoom] = {
-                name: userRoom,
-                users: {},
-                totalUsers: 0
-            }
+    //         userRoom = room;
+    //         socket.join(userRoom);
+    //         roomListPush(userRoom);
+    //         roomdata[userRoom] = {
+    //             name: userRoom,
+    //             users: {},
+    //             totalUsers: 0
+    //         }
 
-            io.to(userRoom).emit("enterRoom", userRoom);
-            io.to(userRoom).emit("senddata", roomdata[userRoom]);
-            io.to(userRoom).emit("userCount", Object.keys(io.sockets.adapter.rooms[userRoom]).length);
-            io.emit("roomList", roomList);
+    //         io.to(userRoom).emit("enterRoom", userRoom);
+    //         io.to(userRoom).emit("senddata", roomdata[userRoom]);
+    //         io.to(userRoom).emit("userCount", Object.keys(io.sockets.adapter.rooms[userRoom]).length);
+    //         io.emit("roomList", roomList);
 
-        } else {
-            socket.emit("alert", "You are already in that room!");
-        }
+    //     } else {
+    //         socket.emit("alert", "You are already in that room!");
+    //     }
 
-    });
+    // });
 
 	data = storage.getItem('data');
     roomdata = storage.getItem('roomdata');
@@ -138,8 +137,8 @@ io.on('connection', function(socket){
         }
 	});
 
-	socket.on('chat message', function(msg, color){
-		io.emit('chat message', msg, color);
+	socket.on('chat message', function(msg, color, room){
+		io.to(room).emit('chat message', msg, color);
 	});
 
     socket.on('pushli', function(text, color){

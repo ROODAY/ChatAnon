@@ -188,6 +188,8 @@
         var focused = true;
         var lastmsg = Date.now();
         var nummessages = $("#messages").children().length;
+        var curRoom = "ChatAnon";
+        var nextRoom;
         marked.setOptions({
           renderer: new marked.Renderer(),
           gfm: true,
@@ -202,10 +204,17 @@
         $("#joinroombtn").click(function() {
             var room = prompt("Enter the Room ID you wish to join or create.");
             if (room !== "" && room !== null && room !== undefined) {
-                socket.emit("joinRoom", room);
+                nextRoom = room;
+                socket.emit("joinRoom", curRoom, nextRoom);
+                socket.leave(curRoom);
+                socket.join(room);
+                curRoom = room;
             }
         });
         $("#defroombtn").click(function() {
+            socket.leave(curRoom);
+            curRoom = "ChatAnon";
+            socket.join("ChatAnon");
             socket.emit("joinRoom", "ChatAnon");
         });
 
