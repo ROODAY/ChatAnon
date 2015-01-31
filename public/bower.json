@@ -1,0 +1,32 @@
+{
+  "name": "ChatAnon",
+  "main": "index.js",
+  "version": "1.0.0",
+  "authors": [
+    "ROODAY <rudytheninja@gmail.com>"
+  ],
+  "description": "Super Secret Chat Room",
+  "moduleType": [
+    "node"
+  ],
+  "keywords": [
+    "chat",
+    "anonymous",
+    "secret"
+  ],
+  "license": "MIT",
+  "homepage": "chatanon.net",
+  "private": true,
+  "ignore": [
+    "**/.*",
+    "node_modules",
+    "bower_components",
+    "test",
+    "tests"
+  ],
+  "dependencies": {
+    "polymer": "Polymer/polymer#~0.5.4",
+    "paper-elements": "Polymer/paper-elements#~0.5.4",
+    "core-elements": "Polymer/core-elements#~0.5.4"
+  }
+}
