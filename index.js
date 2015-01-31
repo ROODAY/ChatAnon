@@ -29,30 +29,22 @@ function roomListPush(member) {
 
 Colors = {};
 Colors.names = {
-    blue: "#0000ff",
-    brown: "#a52a2a",
-    darkblue: "#00008b",
-    darkcyan: "#008b8b",
-    darkgreen: "#006400",
-    darkkhaki: "#bdb76b",
-    darkmagenta: "#8b008b",
-    darkolivegreen: "#556b2f",
-    darkorange: "#ff8c00",
-    darkorchid: "#9932cc",
-    darkred: "#8b0000",
-    darksalmon: "#e9967a",
-    darkviolet: "#9400d3",
-    fuchsia: "#ff00ff",
-    green: "#008000",
-    indigo: "#4b0082",
-    magenta: "#ff00ff",
-    maroon: "#800000",
-    navy: "#000080",
-    olive: "#808000",
-    orange: "#ffa500",
-    purple: "#800080",
-    violet: "#800080",
-    red: "#ff0000"
+    red: "#F44336",
+    pink: "#E91E63",
+    purple: "#9C27B0",
+    deeppurple: "#673AB7",
+    indigo: "#3F51B5",
+    blue: "#2196F3",
+    lightblue: "#03A9F4",
+    cyan: "#00BCD4",
+    teal: "#009688",
+    green: "#4CAF50",
+    lightgreen: "#8BC34A",
+    amber: "#FFC107",
+    orange: "#FF9800",
+    deeporange: "#FF5722",
+    brown: "#795548",
+    bluegrey: "#607D8B"
 };
 Colors.random = function() {
     var result;
@@ -85,7 +77,6 @@ io.on('connection', function(socket){
 
     socket.on("joinRoom", function (room) {
         var join = io.sockets.adapter.rooms[room];
-
         if (!join) {
             if (userRoom != false) {
                 socket.leave(userRoom);
@@ -114,28 +105,12 @@ io.on('connection', function(socket){
         }
 
     });
-    socket.on("disconnect", function(){
-        if (userRoom) {
-            console.log("User " + socket.id + " left room " + userRoom);
-
-            socket.leave(userRoom);
-            io.to(userRoom).emit("userCount", Object.keys(io.sockets.adapter.rooms[userRoom]).length);
-            if (io.sockets.adapter.rooms[userRoom].length == 0) {
-                delete io.sockets.adapter.rooms[userRoom];
-                roomListRemove(userRoom);
-            }
-
-            io.emit("roomList", roomList);
-        }
-    })
 
 	data = storage.getItem('data');
     roomdata = storage.getItem('roomdata');
 	data.totalUsers += 1;
 	data.users[socket.id] = Colors.names[Colors.random()];
 	storage.setItem('data', data);
-
-
     socket.emit('localID', socket.id);
     socket.emit('firstjoin', oldMessages);
     io.emit('ding', true);
@@ -148,6 +123,19 @@ io.on('connection', function(socket){
 		io.emit('senddata', data);
 		console.log('User Disconnected. ID: ' + socket.id);
 		io.emit('console chat message', "A user disconnected.");
+
+        if (userRoom) {
+            console.log("User " + socket.id + " left room " + userRoom);
+
+            socket.leave(userRoom);
+            io.to(userRoom).emit("userCount", Object.keys(io.sockets.adapter.rooms[userRoom]).length);
+            if (io.sockets.adapter.rooms[userRoom].length == 0) {
+                delete io.sockets.adapter.rooms[userRoom];
+                roomListRemove(userRoom);
+            }
+
+            io.emit("roomList", roomList);
+        }
 	});
 
 	socket.on('chat message', function(msg, color){
@@ -155,14 +143,16 @@ io.on('connection', function(socket){
 	});
 
     socket.on('pushli', function(text, color){
-        if (oldMessages.length < 51) {
-            var textobject = [text, color]
-            oldMessages.push(textobject);
-        } else {
-            var textobject = [text, color]
-            oldMessages.splice(0,1);
-            oldMessages.push(textobject);
-        }
+        if (text != undefined && text != null && text != "" && color != undefined && color != null && color != "") {
+            if (oldMessages.length < 51) {
+                var textobject = [text, color]
+                oldMessages.push(textobject);
+            } else {
+                var textobject = [text, color]
+                oldMessages.splice(0,1);
+                oldMessages.push(textobject);
+            }
+        } 
     });
 });
 
@@ -171,6 +161,7 @@ http.listen((process.env.PORT || 3000), function(){
   console.log('listening on *:3000');
 });
 
+/*
 function findClientsSocket(roomId, namespace) {
     var res = []
     , ns = io.of(namespace ||"/");    // the default namespace is "/"
@@ -189,3 +180,4 @@ function findClientsSocket(roomId, namespace) {
     }
     return res;
 }
+*/

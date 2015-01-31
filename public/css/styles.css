@@ -24,42 +24,40 @@
 }
 body { 
     font: 2rem 'Open Sans', Arial; 
-    background-color: #ECF0F1;
+    background-color: #EEEEEE;
 }
 form { 
-    background-color: #BAC0C5;
-    padding-top: 3px; 
-    padding-bottom: 3px;
+    padding: 3px;
 }
-form input { 
-    border: 0; 
+#m {
     padding: 10px; 
-    width: 90%; 
-    margin-right: .5%; 
+    width: 100vw;
+    height: auto;
 }
 form button { 
-    width: 9%;
+    width: 9vw;
     border: none; 
     padding: 10px; 
+    display: inline-block;
 }
 #messages { 
     list-style-type: none;
     padding: 0;
 }
 #messages li { 
-    padding: 5px 10px; 
+    -webkit-transition: margin 0.5s ease;
+    -moz-transition: margin 0.5s ease;
+    transition: margin 0.5s ease;
+    padding: 5px 10px;
+    margin: 3px 0 3px 0;
     word-break: break-all;
-}
-#messages li:nth-child(odd) { 
-    background: #CFD2D3; 
 }
 #header {
     margin-bottom: 1vh;
     padding: 0;
     width: 100%;
-    font-family: 'Source Code Pro', sans-serif;
     text-align: center;
-    color: #4183D7;
+    color: #333;
     height: 5vh;
 }
 #header * {
