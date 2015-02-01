@@ -201,66 +201,23 @@
           smartypants: true
         });
 
-        $("#joinroombtn").click(function() {
-            var room = prompt("Enter the Room ID you wish to join or create.");
-            if (room !== "" && room !== null && room !== undefined) {
-                nextRoom = room;
-                socket.emit("joinRoom", curRoom, nextRoom);
-                socket.leave(curRoom);
-                socket.join(room);
-                curRoom = room;
-            }
+        socket.on('localID', function(id) {
+            localID = id;
         });
-        $("#defroombtn").click(function() {
-            socket.leave(curRoom);
-            curRoom = "ChatAnon";
-            socket.join("ChatAnon");
-            socket.emit("joinRoom", "ChatAnon");
+        socket.on('ding', function(arg) {
+            var ding = new Audio("ding.wav");
+            ding.play();
+            return arg;
         });
-
-        function checkScroll(scroll) {
-            if (scroll >= 80) {
-                $("#messageblock").mCustomScrollbar("scrollTo","bottom", {
-                    scrollInertia:1
-                });
-            } else {
-                missed += 1;
-            }
-            if (blurred) {
-                if (missed > 0) {
-                    document.title = "(" + missed + ") New Messages";
-                }
-                var newmessagesound = new Audio("newmessage.wav");
-                newmessagesound.play();
-            }
-            if (scroll >= 90) {
-                missed = 0;
-            }
-        }
-
-        socket.on("enterRoom", function(room) {
-            if (room !== false && room !== null && room !== undefined) {
-                sweetAlert("Success!","You have entered room " + room + "!","success");
-                $("#roomname").html(room);
-            } else {
-                sweetAlert("Error.","Please try another room.","error");
-            }
-        })
-
         socket.on("roomList", function(rl) {
             $("#roomlist").html("");
             rl.forEach(function(room){
                 $("#roomlist").append($("<li>").text(room));
             });
         });
-
-        socket.on("alert", function(msg) {
-            alert(msg);
-        });
-
         socket.on('firstjoin', function(oldmessages) {
             for (var i = 0; i < oldmessages.length; i++) {
-                $('#messages').append('<paper-shadow z="1" class="text"><li style="color:' + oldmessages[i][1] + ';">' + marked(oldmessages[i][0]) + '</li><paper-ripple fit class="text"></paper-ripple></paper-shadow>');
+                $('#messages').append('<paper-shadow z="1" class="text"><li style="color:' + oldmessages[i][1] + ';">' + marked(oldmessages[i][0]) + '</li><paper-ripple fit></paper-ripple></paper-shadow>');
                 nummessages = $("#messages li").children().length;
                 while (nummessages > 50) {
                     $("#messages:first-child").remove();
@@ -268,29 +225,31 @@
                 }
             }
         });
-        socket.on('localID', function(id) {
-            localID = id;
-        });
-        socket.on('senddata', function(arg){
-            data = arg;
-            localColor = data.users[localID];
-            $("#roomname").html(arg.roomname)
-            $('#users').html(arg.totalUsers);
+    	socket.on('chat message', function(msg, color){
+            console.log(msg, color)
+            if (msg != "" && msg != undefined && msg != null && color != "" && color != undefined && color != null) {
+                $('#messages').append('<paper-shadow z="1" class="text"><li style="color:' + color + ';">' + marked(msg) + '</li><paper-ripple fit></paper-ripple></paper-shadow>');
+                nummessages = $("#messages li").children().length;
+                while (nummessages > 50) {
+                    $("#messages:first-child").remove();
+                    nummessages = $("#messages li").children().length;
+                }
+                checkScroll(localscroll);
+            }
+    	});
+        socket.on('console chat message', function(msg){
+                $('#messages').append('<paper-shadow z="1" class="text"><li style="color:\'black\';" class="rainbow">' + marked(msg) + '</li><paper-ripple fit></paper-ripple></paper-shadow>');
+                checkScroll(localscroll);
         });
 
-        socket.on('ding', function(arg) {
-            var ding = new Audio("ding.wav");
-            ding.play();
-            return arg;
-        });
-
-    	$('form').submit(function(){
+        $('form').submit(function(){
             if ($("#m").val() === "#mufasa") {
                 window.history.pushState("string", "404", "/404.html");
             } else {
                 if ($('#m').val().length <= 500) {
                     if (((Date.now() - lastmsg) / 1000) > 1.5) {
-                        socket.emit('chat message', $('#m').val(), localColor);
+                        socket.emit('chat message', $('#m').val(), localColor, curRoom);
+                        socket.emit('pushli', msg, color, curRoom);
                         $('#m').val('');
                         lastmsg = Date.now();
                         return false;
@@ -305,28 +264,26 @@
                     return false;
                 }
             }
-    	});
-
-    	socket.on('chat message', function(msg, color){
-            if (msg != "" && msg != undefined && msg != null && color != "" && color != undefined && color != null) {
-                $('#messages').append('<paper-shadow z="1" class="text"><li style="color:' + color + ';">' + marked(msg) + '</li><paper-ripple fit class="text"></paper-ripple></paper-shadow>');
-                nummessages = $("#messages li").children().length;
-                while (nummessages > 50) {
-                    $("#messages:first-child").remove();
-                    nummessages = $("#messages li").children().length;
-                }
-                socket.emit('pushli', msg, color);
-                checkScroll(localscroll);
-            }
-    	});
-
-        socket.on('console chat message', function(msg){
-                $('#messages').append('<paper-shadow z="1" class="text"><li style="color:\'black\';" class="rainbow">' + marked(msg) + '</li><paper-ripple fit class="text"></paper-ripple></paper-shadow>');
-                checkScroll(localscroll);
         });
-
-        
-
+        $("#joinroombtn").click(function() {
+            var room = prompt("Enter the Room ID you wish to join or create.");
+            if (room !== "" && room !== null && room !== undefined) {
+                nextRoom = room;
+                socket.emit("joinRoom", curRoom, nextRoom);
+                $("#messages").empty();
+                curRoom = nextRoom;
+                sweetAlert("Success!","You have entered " + curRoom + "!","success");
+                $("#roomname").html(curRoom);
+            } else {
+                sweetAlert("Error.","Please try another room.","error");
+            }
+        });
+        $("#defroombtn").click(function() {
+            socket.emit("joinRoom", curRoom, "ChatAnon");
+            curRoom = "ChatAnon";
+            sweetAlert("Success!","You have entered " + curRoom + "!","success");
+            $("#roomname").html(curRoom);
+        });
         (function($){
             $(window).load(function(){
                $("#messageblock").mCustomScrollbar({
@@ -350,6 +307,25 @@
                 }, 500);
             });
         })(jQuery);
+        function checkScroll(scroll) {
+            if (scroll >= 80) {
+                $("#messageblock").mCustomScrollbar("scrollTo","bottom", {
+                    scrollInertia:1
+                });
+            } else {
+                missed += 1;
+            }
+            if (blurred) {
+                if (missed > 0) {
+                    document.title = "(" + missed + ") New Messages";
+                }
+                var newmessagesound = new Audio("newmessage.wav");
+                newmessagesound.play();
+            }
+            if (scroll >= 90) {
+                missed = 0;
+            }
+        }
     </script>
     <script>
     $(document).ready(function(){
