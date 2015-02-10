@@ -50,11 +50,19 @@ io.on('connection', function(socket){
     console.log('User Connected. ID: ' + socket.id);
     connectclients.push(socket.id); 
     socket.join("ChatAnon");
-    var roomList = io.sockets.adapter.rooms;
-    connectclients.forEach(function(client){
-        delete roomList[client];
+    var roomList = [];
+    Object.keys(io.sockets.adapter.rooms).forEach(function(room) {
+        var isclient = false;
+        connectclients.forEach(function(client){
+            if (room === client) {
+                isclient = true;
+            }
+        });
+        if (isclient === false) {
+            roomList.push(room);
+        }
     });
-    socket.emit("roomList", Object.keys(roomList));
+    socket.emit("roomList", roomList);
     socket.emit('localID', socket.id, Colors.random());
     socket.emit('firstjoin', chatlog.ChatAnon);
     io.sockets.in("ChatAnon").emit('ding', true);
@@ -65,11 +73,19 @@ io.on('connection', function(socket){
     socket.on("joinRoom", function(curRoom, nextRoom){
         socket.leave(curRoom);
         socket.join(nextRoom);
-        var roomList = io.sockets.adapter.rooms;
-        connectclients.forEach(function(client){
-            delete roomList[client];
+        var roomList = [];
+        Object.keys(io.sockets.adapter.rooms).forEach(function(room) {
+            var isclient = false;
+            connectclients.forEach(function(client){
+                if (room === client) {
+                    isclient = true;
+                }
+            });
+            if (isclient === false) {
+                roomList.push(room);
+            }
         });
-        io.sockets.emit("roomList", Object.keys(roomList));
+        io.sockets.emit("roomList", roomList);
         if (!(nextRoom in chatlog)) {
             chatlog[nextRoom] = [];
         } else {
@@ -114,9 +130,17 @@ http.listen((process.env.PORT || 3000), function(){
 });
 
 setInterval(function(){
-    var roomList = io.sockets.adapter.rooms;
-    connectclients.forEach(function(client){
-        delete roomList[client];
+    var roomList = [];
+    Object.keys(io.sockets.adapter.rooms).forEach(function(room) {
+        var isclient = false;
+        connectclients.forEach(function(client){
+            if (room === client) {
+                isclient = true;
+            }
+        });
+        if (isclient === false) {
+            roomList.push(room);
+        }
     });
-    io.sockets.emit("roomList", Object.keys(roomList));
+    io.sockets.emit("roomList", roomList);
 }, 1000);
