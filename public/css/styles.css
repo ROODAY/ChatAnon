@@ -96,9 +96,14 @@ h1, .h1, h2, .h2, h3, .h3 {
 #roomlist {
     list-style-type: none;
 }
-#options #mainbtn {
-    position: fixed;
+#options #optionsbtn {
+    position: absolute;
     right: 5px;
+    top: 5px;
+}
+#info #infobtn {
+    position: absolute;
+    left: 5px;
     top: 5px;
 }
 #options span {

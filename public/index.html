@@ -58,11 +58,12 @@
     </div>
     <img src="giphy.gif" alt="gif" id="frog">
     <div id="options">
-        <paper-icon-button class="btn btn-default" id="mainbtn" data-toggle="modal" data-target="#roomsModal" icon="settings" aria-label="settings"></paper-icon-button>
-        <div class="modal fade" id="roomsModal" tabindex="-1" role="dialog" aria-labelledby="myModalLabel" aria-hidden="true">
+        <paper-icon-button class="btn btn-default" id="optionsbtn" data-toggle="modal" data-target="#roomsModal" icon="settings" aria-label="settings"></paper-icon-button>
+        <div class="modal fade" id="roomsModal" tabindex="-1" role="dialog" aria-labelledby="roomsModal" aria-hidden="true">
           <div class="modal-dialog">
             <div class="modal-content">
               <div class="modal-body">
+                <h2>Rooms</h2>
                 <ul style="list-style-type: none;">
                     <li>Create a Room <paper-icon-button class="btn btn-default" id="joinroombtn" icon="add"></paper-icon-button></li>
                     <li>
@@ -70,6 +71,27 @@
                         <ul id="roomlist"></ul>
                     </li>
                 </ul>
+              </div>
+              <div class="modal-footer">
+                <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
+              </div>
+            </div>
+          </div>
+        </div>
+    </div>
+    <div id="info">
+        <paper-icon-button class="btn btn-default" id="infobtn" data-toggle="modal" data-target="#infomodal" icon="info-outline" aria-label="info"></paper-icon-button>
+        <div class="modal fade" id="infomodal" tabindex="-1" role="dialog" aria-labelledby="infoModal" aria-hidden="true">
+          <div class="modal-dialog">
+            <div class="modal-content">
+              <div class="modal-body">
+                <h2>About</h2>
+                <p>
+                    ChatAnon is a web application utilizing Node.js and Socket.io that allows you chat with people, anonymously. Said people can be friends or strangers, all depends on who comes here. By pressing the little settings button at the top right, you can create new rooms to talk in if you find to get particularly crowded, or you can join a room that's already open. But, keep in mind, while the rooms are anonymous, they are not private. Anyone can join them. Enjoy!
+                </p>
+                <p>
+                    Created by <a href="https://github.com/philsiff">philsiff</a>, <a href="https://github.com/ROODAY">ROODAY</a>, and <a href="https://github.com/liboan">liboan</a>. 
+                </p>
               </div>
               <div class="modal-footer">
                 <button type="button" class="btn btn-default" data-dismiss="modal">Close</button>
@@ -168,17 +190,18 @@
         });
         socket.on('firstjoin', function(oldmessages) {
             for (var i = 0; i < oldmessages.length; i++) {
-                $('#messages').append('<paper-shadow z="1" class="text"><li style="color:' + oldmessages[i][1] + ';" class="text">' + marked(oldmessages[i][0]) + '</li><paper-ripple fit></paper-ripple></paper-shadow>');
+                $('#messages').append('<paper-shadow z="1" class="text"><li style="color:' + oldmessages[i][1] + ';" class="text">' + marked(oldmessages[i][0]) + '</li></paper-shadow>');
                 nummessages = $("#messages li").children().length;
                 while (nummessages > 50) {
                     $("#messages:first-child").remove();
                     nummessages = $("#messages li").children().length;
                 }
             }
+            $("#messages a").attr("target","_blank");
         });
     	socket.on('chat message', function(msg, color){
             if (msg != "" && msg != undefined && msg != null && color != "" && color != undefined && color != null) {
-                $('#messages').append('<paper-shadow z="1" class="text"><li style="color:' + color + ';">' + marked(msg) + '</li><paper-ripple fit></paper-ripple></paper-shadow>');
+                $('#messages').append('<paper-shadow z="1" class="text"><li style="color:' + color + ';">' + marked(msg) + '</li></paper-shadow>');
                 nummessages = $("#messages li").children().length;
                 while (nummessages > 50) {
                     $("#messages:first-child").remove();
@@ -193,10 +216,11 @@
                     }, 500);
                 });
                 checkScroll(localscroll);
+                $("#messages a").attr("target","_blank");
             }
     	});
         socket.on('console chat message', function(msg){
-                $('#messages').append('<paper-shadow z="1" class="text"><li style="color:\'black\';" class="rainbow">' + marked(msg) + '</li><paper-ripple fit></paper-ripple></paper-shadow>');
+                $('#messages').append('<paper-shadow z="1" class="text"><li style="color:\'black\';" class="rainbow">' + marked(msg) + '</li></paper-shadow>');
                 $("#messages .text").click(function(){
                     var el = $(this);
                     el.css("height", el.height());

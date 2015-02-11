@@ -103,6 +103,10 @@ io.on('connection', function(socket){
 
     socket.on('disconnect',function(){
         io.sockets.emit('console chat message', "A user disconnected.");
+        Object.keys(io.sockets.adapter.rooms).forEach(function(room) {
+            io.sockets.in(room).emit("updateClientNumber", Object.keys(io.sockets.adapter.rooms[room]).length);
+        });
+        
     });
 
 	socket.on('chat message', function(text, color, room){
